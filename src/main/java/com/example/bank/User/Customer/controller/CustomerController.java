@@ -7,6 +7,7 @@ import com.example.bank.User.Customer.service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ public class CustomerController {
     CustomerService customerService;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public newCustomerDto createCustomer(@Validated @RequestBody createCustomerDto customer){
         logger.info("Received request to /api/v1/customer");
 

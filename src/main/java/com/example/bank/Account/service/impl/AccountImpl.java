@@ -25,35 +25,7 @@ public class AccountImpl implements AccountService {
     @Autowired
     AccountRepository accountRepository;
     @Autowired
-    helperAccountMethods helperAccountMethods;
-    @Autowired
     ModelMapper modelMapper;
-
-    @Override
-    public Account createAccountDetails(newAccountDto acc) {
-
-        logger.info("createAccountDetails service class for creating customer");
-
-        var accountNumber = helperAccountMethods.generateAccountNumber();
-
-        Optional<Account> ifAccountExist = accountRepository.findByAccountNumber(accountNumber);
-
-
-        if (ifAccountExist.isPresent())
-            throw new CustomApiException(HttpStatus.BAD_REQUEST,
-                    "Account with this account Number Already exist Try again");
-
-        var account = new Account();
-        account.setAccountNumber(accountNumber);
-        account.setAccountStatus(acc.getAccountStatus());
-        account.setAccountType(acc.getAccountType());
-        account.setOpenDate(acc.getOpenDate());
-        account.setTransactions(new ArrayList<>());
-        account.setBalance(acc.getBalance());
-
-
-        return accountRepository.save(account);
-    }
 
     @Override
     public Optional<SingleAccountDetailsDto> singleAccountDetails(String accountNumber) {

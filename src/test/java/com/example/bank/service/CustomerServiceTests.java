@@ -100,9 +100,7 @@ public class CustomerServiceTests {
     @Test
     @DisplayName("should save the new customer with new account to the database")
    public void newCustomer(){
-        newAccountDto account = new newAccountDto();
-        account.setAccountType(AccountType.Savings);
-        account.setAccountStatus(AccountStatus.Active);
+
 
         createCustomerDto customer = new createCustomerDto();
         customer.setFirstName("abayomi");
@@ -115,7 +113,7 @@ public class CustomerServiceTests {
         customer.setNationality("Nigeria");
         customer.setNationalIdentityNumber("ER367YU");
         customer.setPostalCode("900001");
-        customer.setAccount(account);
+        customer.setAccount(accountDto);
 
         when(accountRepository.save(any(Account.class))).thenReturn(newAccount);
         when(helperAccountMethods.generateAccountNumber()).thenReturn("1234567");
