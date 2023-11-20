@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: Pull image from docker hub
         run: docker pull abayomexy/banky:latest
-      - name: Delete Old container
+      - name: Delete Old containers
         run: docker rm -f banky
       - name: Run docker container
         run: docker run --name banky -d -p 8000:8000 -e CONTAINER_PORT=${{secrets.CONTAINER_PORT}} -e DB_URL=${{secrets.DB_URL}} -e DB_PASSWORD=${{secrets.DB_PASSWORD}}
