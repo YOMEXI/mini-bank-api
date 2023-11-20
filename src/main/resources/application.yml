@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: prod
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${DB_URL}
@@ -37,12 +37,12 @@ server:
     baseline-description: "init"
     baseline-version: 0
 
-security:
-  jwt:
-    token-secret-key: ${JWT_SECRET}
-    refresh-token-expiration: ${JWT_REFRESH_EXPIRATION}
-    expiration: ${JWT_EXPIRATION}
+banky:
+  openapi:
+    dev-url: ${devUrl}
+    prod-url: ${prodUrl}
+
 
 application:
-  title: college-management
+  title: mini-bank
   version: 1.0

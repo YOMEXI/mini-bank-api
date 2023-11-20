@@ -1,0 +1,41 @@
+name: mini bank deployment
+
+on:
+  push:
+    branches: [production]
+    paths:
+      - 'src/**'
+      - '.github/workflows/prod.yaml'
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: checkout source
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@3
+        with:
+          distribution: "temurin"
+          java-version: "17"
+      - name: Build project
+        run: mvn clean install -DskipTests
+      - name: Run tests
+        run: mvn tests
+      - name: Login to Docker
+        run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
+      - name: Build docker image
+        run: docker build -t banky .
+      - name: Publish image to docker hub
+        run: docker push abayomexy/applications:banky
+
+  deploy:
+    needs: build
+    runs-on: [aws-ec2]
+    steps:
+      - name: Pull image from docker hub
+      - run: docker pull banky:latest
+      - name: Delete Old container
+        run: docker rm -f banky
+      - name: Run docker container
+      - run: docker run --name banky -d -p 8000:8000 -e CONTAINER_PORT=${{secrets.CONTAINER_PORT}} -e DB_URL=${{secrets.DB_URL}} -e DB_PASSWORD=${{secrets.DB_PASSWORD}}

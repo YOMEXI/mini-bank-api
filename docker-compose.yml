@@ -1,0 +1,17 @@
+version: "3.6"
+services:
+  vault:
+    container_name: ubuntu-with-vlt
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-vault
+    env_file: env/vault.env
+    networks:
+      - hashinet
+    volumes:
+      - vault-data:/vault/data
+
+networks:
+  hashinet:
+volumes:
+  vault-data:

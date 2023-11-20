@@ -29,13 +29,20 @@ public class AccountImpl implements AccountService {
 
     @Override
     public Optional<SingleAccountDetailsDto> singleAccountDetails(String accountNumber) {
+        logger.info("newCustomer service class for single Account details");
 
         Optional<Account> account = accountRepository.findByAccountNumber(accountNumber);
 
         if (account.isEmpty())
             throw new CustomApiException(HttpStatus.BAD_REQUEST,
-                    "Account with this account Number doesnt exist");
+                    "Account with this account Number doesn't exist");
 
         return account.map(acc -> modelMapper.map(acc, SingleAccountDetailsDto.class));
+    }
+
+    public String depositIntoAccount(){
+        logger.info("newCustomer service class for single Account details");
+
+        return "";
     }
 }

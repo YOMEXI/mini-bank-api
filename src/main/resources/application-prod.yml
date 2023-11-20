@@ -1,0 +1,11 @@
+ACTIVE_PROFILE: prod
+DB_PORT: 5432
+DB_NAME: bank_ubyv
+DB_USER: bank
+DB_URL :  ${DB_URL}
+DB_SCHEMA: bank
+DB_PASSWORD: ${DB_PASSWORD}
+
+devUrl: http://localhost:8080
+prodUrl: ""
+CONTAINER_PORT: ${CONTAINER_PORT}
