@@ -32,8 +32,8 @@ jobs:
     runs-on: [aws-ec2]
     steps:
       - name: Pull image from docker hub
-        run: docker pull abayomexy/banky:latest
+        run: sudo docker pull abayomexy/banky:latest
       - name: Delete Old containers
-        run: docker rm -f banky
+        run: sudo docker rm -f banky
       - name: Run docker container
-        run: docker run --name banky -d -p 8000:8000 -e CONTAINER_PORT=${{secrets.CONTAINER_PORT}} -e DB_URL=${{secrets.DB_URL}} -e DB_PASSWORD=${{secrets.DB_PASSWORD}}
+        run: sudo docker run --name banky -d -p 8000:8000 -e CONTAINER_PORT=${{secrets.CONTAINER_PORT}} -e DB_URL=${{secrets.DB_URL}} -e DB_PASSWORD=${{secrets.DB_PASSWORD}}
