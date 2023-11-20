@@ -25,7 +25,7 @@ jobs:
       - name: Build docker image
         run: docker build -t banky .
       - name: Publish image to docker hub
-        run: docker push abayomexy/applications:banky
+        run: docker push banky
 
   deploy:
     needs: build
