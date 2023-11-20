@@ -31,7 +31,7 @@ public class AccountController implements AccountSwagger {
     public String Test (@PathVariable String accountNumber){
         logger.info("Received request to a single account detail /api/v1/account");
 
-        return  "2222222";
+        return  "1111111";
 
     }
 }
