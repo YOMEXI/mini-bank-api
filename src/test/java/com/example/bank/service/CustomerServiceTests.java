@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -123,5 +124,7 @@ public class CustomerServiceTests {
         verify(helperAccountMethods,times(1)).generateAccountNumber();
         assertNotNull(createdCustomer);
     }
+
+
 
 }
