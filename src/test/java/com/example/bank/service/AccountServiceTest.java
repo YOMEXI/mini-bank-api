@@ -3,10 +3,11 @@ package com.example.bank.service;
 
 import com.example.bank.Account.dto.SingleAccountDetailsDto;
 import com.example.bank.Account.entities.Account;
-import com.example.bank.Account.enums.AccountStatus;
-import com.example.bank.Account.enums.AccountType;
-import com.example.bank.Account.enums.Currency;
+import com.example.bank.Account.entities.Transaction;
+import com.example.bank.Account.enums.*;
+import com.example.bank.Account.helperMethods.helperAccountMethods;
 import com.example.bank.Account.repository.AccountRepository;
+import com.example.bank.Account.repository.TransactionRepository;
 import com.example.bank.Account.service.impl.AccountImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +26,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -36,10 +38,17 @@ public class AccountServiceTest {
     AccountImpl accountService;
     @Mock
     AccountRepository accountRepository;
+    @Mock
+    TransactionRepository transactionRepository;
     @Spy
     ModelMapper modelMapper;
 
+    @Mock
+    helperAccountMethods helperMethods;
+
     private Account account;
+    private Transaction transactionDeposit ;
+
     @BeforeEach
     void init(){
 
@@ -54,6 +63,16 @@ public class AccountServiceTest {
         account.setOpenDate(LocalDate.now());
         account.setClosedDate("");
         account.setTransactions(new ArrayList<>());
+
+        transactionDeposit = new Transaction();
+        transactionDeposit.setId(1L);
+        transactionDeposit.setAccount(account);
+        transactionDeposit.setTransactionStatus(TransactionStatus.SUCCESS);
+        transactionDeposit.setAmount(BigDecimal.valueOf(500));
+        transactionDeposit.setTransactionType(TransactionType.DEPOSIT);
+        transactionDeposit.setReferenceNumber(anyString());
+        transactionDeposit.setDescription("");
+
     }
 
     @Test
@@ -62,14 +81,23 @@ public class AccountServiceTest {
 
         String accountNumber = "123456789";
 
-        when(accountRepository.findByAccountNumber(anyString())).thenReturn(Optional.of(account));
+        when(accountRepository.findByAccountNumber(accountNumber)).thenReturn(Optional.of(account));
 
         Optional<SingleAccountDetailsDto> accountDetails = accountService
                 .singleAccountDetails(account.getAccountNumber());
 
         assertNotNull(accountDetails);
        assertThat(accountDetails.get().getAccountNumber()).isNotEqualTo(null);
+    }
 
+    @Test
+    @DisplayName("should deposit amount into user account")
+    public void depositMoneyIntoUserAccount(){
+        double amount = 300.00;
 
+        when(accountRepository.findByAccountNumber("1234567890")).thenReturn(Optional.ofNullable(account));
+        when(transactionRepository.save(any(Transaction.class))).thenReturn(transactionDeposit);
+        String  depositMoney = accountService.depositIntoAccount("1234567890",amount);
+        assertNotNull(depositMoney);
     }
 }

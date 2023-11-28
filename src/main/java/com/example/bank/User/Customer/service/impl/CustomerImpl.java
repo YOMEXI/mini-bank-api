@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,6 +56,7 @@ public class CustomerImpl implements CustomerService {
         newCustomer.setSocialSecurityNumber(customer.getSocialSecurityNumber());
         newCustomer.setState(customer.getState());
 
+
         var accountNumber = helperAccountMethods.generateAccountNumber();
 
         Optional<Account> ifAccountExist = accountRepository.findByAccountNumber(accountNumber);
@@ -69,7 +71,7 @@ public class CustomerImpl implements CustomerService {
         account.setAccountType(customer.getAccount().getAccountType());
         account.setOpenDate(customer.getAccount().getOpenDate());
         account.setTransactions(new ArrayList<>());
-        account.setBalance(customer.getAccount().getBalance());
+        account.setBalance(BigDecimal.valueOf(0));
 
        var accDetails = accountRepository.save(account);
         if(accDetails.getId()== null) {

@@ -19,6 +19,21 @@ public interface AccountSwagger {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "an object of some properties of the new account")
     })
-
      Optional<SingleAccountDetailsDto> singleAccountDetails ( String accountNumber);
+
+    @Operation(
+            summary = "Deposit amount into customer account",
+            description = "Allow deposits of amounts greater than 499")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "A string Deposit successfully made")
+    })
+    String DepositIntoAccount (String accountNumber, double amount);
+    @Operation(
+            summary = "Withdraw amount from customer account",
+            description = "Allow withdrawal of amount greater than 499")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "A string Withdrawal successfully made")
+    })
+    String withDrawFromAccount(String accountNumber, double amount);
+
 }

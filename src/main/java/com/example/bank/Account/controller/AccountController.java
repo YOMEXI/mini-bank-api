@@ -27,11 +27,28 @@ public class AccountController implements AccountSwagger {
 
     }
 
-    @GetMapping()
-    public String Test (@PathVariable String accountNumber){
-        logger.info("Received request to a single account detail /api/v1/account");
 
-        return  "11111116666";
+    @PostMapping("/{accountNumber}/deposit")
+    public String DepositIntoAccount(@PathVariable String accountNumber, @RequestParam double amount){
+        logger.info("Received request to a deposit into account detail with account no: {}", accountNumber);
+
+        return accountService.depositIntoAccount(accountNumber,amount);
+
+    }
+
+    @PostMapping("/{accountNumber}/withdrawal")
+    public String withDrawFromAccount(@PathVariable String accountNumber, @RequestParam double amount){
+        logger.info("Received request to a deposit into account detail with account no: {}", accountNumber);
+
+        return accountService.WithDrawFromAccount(accountNumber,amount);
+
+    }
+
+    @PostMapping("/{accountNumber}/suspend")
+    public String suspendAccount(@PathVariable String accountNumber){
+        logger.info("Received request to a suspend an account detail with account no: {}", accountNumber);
+
+        return accountService.suspendAccount(accountNumber);
 
     }
 }
