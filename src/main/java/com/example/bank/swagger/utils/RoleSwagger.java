@@ -33,7 +33,7 @@ public interface RoleSwagger {
 
     @Operation(
             summary = " a single role",
-            description = "Return an object of role type")
+            description = "Return an object of role types")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return an object of role type")
     })
