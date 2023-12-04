@@ -43,6 +43,7 @@ public class OpenApiConfig {
                 .version("1.0")
                 .contact(contact)
                 .description("This API exposes endpoints to manage mini-bank api.")
+
                 //.termsOfService("")
                 .license(mitLicense);
 

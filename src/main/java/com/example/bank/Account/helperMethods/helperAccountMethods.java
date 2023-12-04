@@ -25,9 +25,9 @@ public class helperAccountMethods {
         return String.valueOf(randomPart);
     }
 
-    public void depositValidation(double amount,Optional<Account>account){
+    public void depositValidation(double amount,Account account){
 
-        if (account.get().getAccountStatus()== AccountStatus.Suspended)
+        if (account.getAccountStatus()== AccountStatus.Suspended)
             throw new CustomApiException(HttpStatus.BAD_REQUEST,
                     "Account Suspended Transaction cannot progress");
 
@@ -42,10 +42,10 @@ public class helperAccountMethods {
         //return true;
     }
 
-    public void withDrawalValidation(Double amount, Optional<Account> account) {
+    public void withDrawalValidation(Double amount, Account account) {
         final double minimumWithDrawableAmount = 500.00;
 
-        if (account.get().getAccountStatus()== AccountStatus.Suspended)
+        if (account.getAccountStatus()== AccountStatus.Suspended)
             throw new CustomApiException(HttpStatus.BAD_REQUEST,
                     "Account Suspended Transaction cannot progress");
 
@@ -53,7 +53,7 @@ public class helperAccountMethods {
             throw new CustomApiException(HttpStatus.BAD_REQUEST,
                     "Minimum amount withdrawa-able is 500 naira");
 
-        if (account.get().getBalance().compareTo(BigDecimal.valueOf(amount)) < 0)
+        if (account.getBalance().compareTo(BigDecimal.valueOf(amount)) < 0)
             throw new CustomApiException(HttpStatus.BAD_REQUEST,
                     " Insufficient Funds");
 
@@ -61,7 +61,7 @@ public class helperAccountMethods {
 
     }
 
-    public Optional<Account> validateAccountWithAccountNumber(String accountNumber){
+    public Account validateAccountWithAccountNumber(String accountNumber){
 
         Optional<Account> account = accountRepository.findByAccountNumber(accountNumber);
 
@@ -69,6 +69,6 @@ public class helperAccountMethods {
             throw new CustomApiException(HttpStatus.BAD_REQUEST,
                     "Account with this account Number doesn't exist");
 
-        return account;
+        return account.get();
     }
 }

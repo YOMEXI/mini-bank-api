@@ -1,7 +1,6 @@
 package com.example.bank.Account.service.impl;
 
 import com.example.bank.Account.dto.SingleAccountDetailsDto;
-import com.example.bank.Account.entities.Account;
 import com.example.bank.Account.entities.Transaction;
 import com.example.bank.Account.enums.AccountStatus;
 import com.example.bank.Account.enums.TransactionStatus;
@@ -10,16 +9,13 @@ import com.example.bank.Account.helperMethods.helperAccountMethods;
 import com.example.bank.Account.repository.AccountRepository;
 import com.example.bank.Account.repository.TransactionRepository;
 import com.example.bank.Account.service.AccountService;
-import com.example.bank.Exception.CustomApiException;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
 public class AccountImpl implements AccountService {
@@ -35,12 +31,12 @@ public class AccountImpl implements AccountService {
     TransactionRepository transactionRepository;
 
     @Override
-    public Optional<SingleAccountDetailsDto> singleAccountDetails(String accountNumber) {
+    public SingleAccountDetailsDto singleAccountDetails(String accountNumber) {
         logger.info("newCustomer service class for single Account details");
 
-        Optional<Account> account = helperMethods.validateAccountWithAccountNumber(accountNumber);
+        var account = helperMethods.validateAccountWithAccountNumber(accountNumber);
 
-        return account.map(acc -> modelMapper.map(acc, SingleAccountDetailsDto.class));
+        return  modelMapper.map(account, SingleAccountDetailsDto.class);
     }
 
 
@@ -50,7 +46,7 @@ public class AccountImpl implements AccountService {
         var account = helperMethods.validateAccountWithAccountNumber(accountNumber);
         helperMethods.depositValidation(amount,account);
 
-       var updatedBalance = account.get().getBalance().add(BigDecimal.valueOf(amount));
+       var updatedBalance = account.getBalance().add(BigDecimal.valueOf(amount));
 
                    var transaction = new Transaction();
                    transaction.setAmount(updatedBalance);
@@ -59,11 +55,11 @@ public class AccountImpl implements AccountService {
                    transaction.setWithDrawAmount(BigDecimal.valueOf(0));
                    transaction.setTransactionType(TransactionType.DEPOSIT);
                    transaction.setTransactionStatus(TransactionStatus.SUCCESS);
-                   transaction.setAccount(account.get());
+                   transaction.setAccount(account);
 
-                   account.get().setBalance(updatedBalance);
+                   account.setBalance(updatedBalance);
 
-                   account.ifPresent(accountRepository::save);
+                   accountRepository.save(account);
                    transactionRepository.save(transaction);
 
                    return "Deposit Successfully Made";
@@ -77,7 +73,7 @@ public class AccountImpl implements AccountService {
         var account = helperMethods.validateAccountWithAccountNumber(accountNumber);
         helperMethods.withDrawalValidation(amount,account);
 
-        var updatedBalance = account.get().getBalance().subtract(BigDecimal.valueOf(amount));
+        var updatedBalance = account.getBalance().subtract(BigDecimal.valueOf(amount));
 
 
 
@@ -88,11 +84,11 @@ public class AccountImpl implements AccountService {
         transaction.setWithDrawAmount(BigDecimal.valueOf(0));
         transaction.setTransactionType(TransactionType.WITHDRAWAL);
         transaction.setTransactionStatus(TransactionStatus.SUCCESS);
-        transaction.setAccount(account.get());
+        transaction.setAccount(account);
 
-        account.get().setBalance(updatedBalance);
+        account.setBalance(updatedBalance);
 
-        account.ifPresent(accountRepository::save);
+        accountRepository.save(account);
         transactionRepository.save(transaction);
 
         return "WithDrawal Successfully Made";
@@ -101,9 +97,8 @@ public class AccountImpl implements AccountService {
     public String suspendAccount(String accountNumber) {
         var account = helperMethods.validateAccountWithAccountNumber(accountNumber);
 
-        account.get().setAccountStatus(AccountStatus.Suspended);
-
-        account.ifPresent(accountRepository::save);
+        account.setAccountStatus(AccountStatus.Suspended);
+        accountRepository.save(account);
 
         return "Account Suspended";
     }
