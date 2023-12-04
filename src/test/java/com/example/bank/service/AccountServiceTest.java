@@ -28,6 +28,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 
@@ -48,6 +50,7 @@ public class AccountServiceTest {
 
     private Account account;
     private Transaction transactionDeposit ;
+    private Transaction transactionWithdrawal;
 
     @BeforeEach
     void init(){
@@ -70,8 +73,17 @@ public class AccountServiceTest {
         transactionDeposit.setTransactionStatus(TransactionStatus.SUCCESS);
         transactionDeposit.setAmount(BigDecimal.valueOf(500));
         transactionDeposit.setTransactionType(TransactionType.DEPOSIT);
-        transactionDeposit.setReferenceNumber(anyString());
+        transactionDeposit.setReferenceNumber("100");
         transactionDeposit.setDescription("");
+
+        transactionWithdrawal = new Transaction();
+        transactionWithdrawal.setId(2L);
+        transactionWithdrawal.setAccount(account);
+        transactionWithdrawal.setTransactionStatus(TransactionStatus.SUCCESS);
+        transactionWithdrawal.setAmount(BigDecimal.valueOf(500));
+        transactionWithdrawal.setTransactionType(TransactionType.WITHDRAWAL);
+        transactionWithdrawal.setReferenceNumber("200");
+        transactionWithdrawal.setDescription("");
 
     }
 
@@ -81,23 +93,50 @@ public class AccountServiceTest {
 
         String accountNumber = "123456789";
 
-        when(accountRepository.findByAccountNumber(accountNumber)).thenReturn(Optional.of(account));
+        when(helperMethods.validateAccountWithAccountNumber(accountNumber)).thenReturn(account);
 
-        Optional<SingleAccountDetailsDto> accountDetails = accountService
-                .singleAccountDetails(account.getAccountNumber());
+        SingleAccountDetailsDto accountDetails = accountService
+                .singleAccountDetails(accountNumber);
+
 
         assertNotNull(accountDetails);
-       assertThat(accountDetails.get().getAccountNumber()).isNotEqualTo(null);
+       assertThat(accountDetails.getAccountNumber()).isNotEqualTo(null);
     }
 
     @Test
     @DisplayName("should deposit amount into user account")
     public void depositMoneyIntoUserAccount(){
         double amount = 300.00;
+        String accountNumber = "123456789";
 
-        when(accountRepository.findByAccountNumber("1234567890")).thenReturn(Optional.ofNullable(account));
+
+        when(helperMethods.validateAccountWithAccountNumber("1234567890")).thenReturn(account);
         when(transactionRepository.save(any(Transaction.class))).thenReturn(transactionDeposit);
+
         String  depositMoney = accountService.depositIntoAccount("1234567890",amount);
         assertNotNull(depositMoney);
+    }
+
+    @Test
+    @DisplayName("should withdraw amount from user account")
+    public void WithDrawMoneyFromUserAccount(){
+        double amount = 300.00;
+        String accountNumber = "123456789";
+
+        when(helperMethods.validateAccountWithAccountNumber("1234567890")).thenReturn(account);
+
+        when(transactionRepository.save(any(Transaction.class))).thenReturn(transactionWithdrawal);
+        String  depositMoney = accountService.WithDrawFromAccount("1234567890",amount);
+        assertNotNull(depositMoney);
+    }
+
+    @Test
+    @DisplayName("should suspend user account")
+    public void suspendUserAccount(){
+
+        when(helperMethods.validateAccountWithAccountNumber("1234567890")).thenReturn(account);
+
+        String  suspendedAccount = accountService.suspendAccount("1234567890");
+        assertNotNull(suspendedAccount);
     }
 }
