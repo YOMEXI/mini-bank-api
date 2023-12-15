@@ -41,7 +41,11 @@ banky:
   openapi:
     dev-url: ${devUrl}
     prod-url: ${prodUrl}
-
+security:
+  jwt:
+    token-secret-key: ${JWT_SECRET}
+    refresh-token-expiration: ${JWT_REFRESH_EXPIRATION}
+    expiration: ${JWT_EXPIRATION}
 
 application:
   title: mini-bank
