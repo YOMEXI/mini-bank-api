@@ -25,7 +25,6 @@ public class AccountController implements AccountSwagger {
 
     }
 
-
     @PostMapping("/{accountNumber}/deposit")
     public String DepositIntoAccount(@PathVariable String accountNumber, @RequestParam double amount){
         logger.info("Received request to a deposit into account detail with account no: {}", accountNumber);
