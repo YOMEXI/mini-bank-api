@@ -3,13 +3,12 @@ package com.example.bank.auth.config;
 import com.example.bank.Exception.AccessDenied;
 import com.example.bank.Exception.AuthEntryPoint;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,9 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
-
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 
 @Configuration
@@ -37,14 +33,16 @@ public class SecurityConfig {
     private final AuthenticationProvider employeeAuthenticationProvider;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        AntPathRequestMatcher[] requestMatchers = getAntPathRequestMatchers();
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception{
+        MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
 
+        return http
+                .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(requestMatchers).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/auth/**")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/staff/**")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/role/**")).permitAll()
                         .anyRequest()
                         .authenticated()
                 )
@@ -64,7 +62,8 @@ public class SecurityConfig {
 
 
 
-    String[] unSecuredPaths = new String[]{
+
+    private static final String[] AUTH_WHITELIST = {
 
             // for Swagger UI v2
             "/v2/api-docs",
@@ -78,21 +77,9 @@ public class SecurityConfig {
             // for Swagger UI v3 (OpenAPI)
             "/v3/api-docs/**",
             "/swagger-ui/**",
-
-
+            "/api/v1/**",
             "/api/v1/role/**",
-            "/api/v1/staff/**",
             "/api/v1/auth/**"
-
     };
-
-    private AntPathRequestMatcher[] getAntPathRequestMatchers() {
-        AntPathRequestMatcher[] requestMatchers = new AntPathRequestMatcher[unSecuredPaths.length];
-        for (int i = 0; i < unSecuredPaths.length; i++) {
-            requestMatchers[i] = new AntPathRequestMatcher(unSecuredPaths[i]);
-        }
-        return requestMatchers;
-    }
-
 
 }
