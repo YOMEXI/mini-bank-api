@@ -8,6 +8,8 @@ import com.example.bank.Account.enums.AccountType;
 import com.example.bank.Account.enums.Currency;
 import com.example.bank.Account.service.impl.AccountImpl;
 import com.example.bank.User.Customer.controller.CustomerController;
+import com.example.bank.auth.config.JwtAuthFilter;
+import com.example.bank.auth.config.JwtFullService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +43,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(AccountController.class) // Provide your main application class
 @ActiveProfiles("test")
 public class AccountControllerTest {
+
+    @MockBean
+    private JwtFullService jwtService; // Mocked service
+
+    @Autowired
+    private JwtAuthFilter JwtAuthFilter;
 
     @Autowired
     private MockMvc mockMvc;
