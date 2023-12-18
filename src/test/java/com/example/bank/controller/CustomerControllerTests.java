@@ -6,6 +6,8 @@ import com.example.bank.User.Customer.dto.newCustomerDto;
 import com.example.bank.User.Customer.entites.Customer;
 import com.example.bank.User.Customer.enums.Gender;
 import com.example.bank.User.Customer.service.impl.CustomerImpl;
+import com.example.bank.auth.config.JwtAuthFilter;
+import com.example.bank.auth.config.JwtFullService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +35,11 @@ import java.util.ArrayList;
 @WebMvcTest(CustomerController.class) // Provide your main application class
 @ActiveProfiles("test")
 public class CustomerControllerTests {
+    @MockBean
+    private JwtFullService jwtService; // Mocked service
+
+    @Autowired
+    private JwtAuthFilter JwtAuthFilter;
     @Autowired
     private MockMvc mockMvc;
 
