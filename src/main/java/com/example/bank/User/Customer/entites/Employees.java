@@ -40,8 +40,8 @@ public class Employees implements UserDetails {
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "staff_roles",
-            joinColumns = @JoinColumn(name = "staff_id"),
+            name = "employees_roles",
+            joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<RoleEntity> role = new HashSet<>();
