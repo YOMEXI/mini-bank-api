@@ -38,16 +38,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+        AntPathRequestMatcher[] requestMatchers = getAntPathRequestMatchers();
         return http
                 .csrf(AbstractHttpConfigurer::disable)
 
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/role/**")).permitAll()
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/auth/**")).permitAll()
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/v3/api-docs/**")).permitAll()
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**")).permitAll()
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/staff/**")).permitAll()
+                        .requestMatchers(requestMatchers).permitAll()
                         .anyRequest()
                         .authenticated()
                 )
@@ -67,8 +64,7 @@ public class SecurityConfig {
 
 
 
-
-    private static final String[] AUTH_WHITELIST = {
+    String[] unSecuredPaths = new String[]{
 
             // for Swagger UI v2
             "/v2/api-docs",
@@ -83,9 +79,20 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/swagger-ui/**",
 
-            "/api/v1/**",
-            "/api/v1/role/**"
+
+            "/api/v1/role/**",
+            "/api/v1/staff/**",
+            "/api/v1/auth/**"
 
     };
+
+    private AntPathRequestMatcher[] getAntPathRequestMatchers() {
+        AntPathRequestMatcher[] requestMatchers = new AntPathRequestMatcher[unSecuredPaths.length];
+        for (int i = 0; i < unSecuredPaths.length; i++) {
+            requestMatchers[i] = new AntPathRequestMatcher(unSecuredPaths[i]);
+        }
+        return requestMatchers;
+    }
+
 
 }
