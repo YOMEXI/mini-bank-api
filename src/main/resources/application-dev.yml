@@ -14,5 +14,5 @@ JWT_EXPIRATION: 900000000
 PORT: 8000
 CONTAINER_PORT: 8000
 devUrl: http://localhost:8080
-prodUrl: "f"
+prodUrl: "not-yet"
 
